@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -24,34 +25,44 @@ public class YandexMarketTest {
         driver = new ChromeDriver();
         logger.info("Browser driver open");
         driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+        driver.manage().window().maximize();
     }
 
 
     @Test
-    public void yandexMarketPhoneComparisonTest() {
+    public void yandexMarketPhoneComparisonTest() throws InterruptedException {
         driver.get("https://market.yandex.ru/");
-        driver.findElement(By.cssSelector("div._381y5orjSo:nth-child(1) > div:nth-child(5) > div:nth-child(1) > a:nth-child(1)")).click();
-        if (driver.findElement(By.xpath("//*[contains(text(), 'Понятно')]")).isDisplayed()){
-            driver.findElement(By.xpath("//*[contains(text(), 'Понятно')]")).click();
+
+        WebElement buttonPonyatno = (new WebDriverWait(driver, 10)).
+                until(ExpectedConditions.elementToBeClickable(By.xpath("//*[contains(text(), 'Понятно')]")));
+
+        if (buttonPonyatno.isDisplayed()){
+            buttonPonyatno.click();
         }
-        driver.findElement(By.cssSelector("div._1YdrMWBuYy:nth-child(1) > div:nth-child(2) > ul:nth-child(1) > li:nth-child(1) > div:nth-child(1) > a:nth-child(1)")).click();
-        driver.findElement(By.cssSelector("div._3_phr-spJh:nth-child(3) > div:nth-child(1) > div:nth-child(1) > fieldset:nth-child(1) > ul:nth-child(2) > li:nth-child(10) > div:nth-child(1) > a:nth-child(1) > label:nth-child(1) > div:nth-child(2) > span:nth-child(1)")).click();
-        if (driver.findElement(By.xpath("//*[contains(text(), 'Понятно')]")).isDisplayed()){
-            driver.findElement(By.xpath("//*[contains(text(), 'Понятно')]")).click();
-        }
-        driver.findElement(By.cssSelector("div._3_phr-spJh:nth-child(3) > div:nth-child(1) > div:nth-child(1) > fieldset:nth-child(1) > ul:nth-child(2) > li:nth-child(11) > div:nth-child(1) > a:nth-child(1) > label:nth-child(1) > div:nth-child(2) > span:nth-child(1)")).click();
+
+        driver.findElement(By.cssSelector("div._381y5orjSo:nth-child(1) > div:nth-child(4) > div:nth-child(1) > a:nth-child(1)")).click();
+
+        driver.findElement(By.xpath("//*[text() = 'Смартфоны']")).click();
+
+        driver.findElement(By.xpath("//*[contains(@name, 'Производитель Samsung')]/..")).click();
+        driver.findElement(By.xpath("//*[contains(@name, 'Производитель Xiaomi')]/..")).click();
+
         driver.findElement(By.cssSelector("button._2zH77vazcW:nth-child(3)")).click();
-        new WebDriverWait(driver, 10).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//*[contains(text(), 'Samsung')]/ancestor::article/descendant::div[@data-tid = 'd460c8a7']/div[2]/div")));
+
+        driver.findElement(By.xpath("//h1[contains(text(), 'Мобильные телефоны')]")).isDisplayed();
+
         driver.findElement(By.xpath("//*[contains(text(), 'Samsung')]/ancestor::article/descendant::div[@data-tid = 'd460c8a7']/div[2]/div")).click();
         driver.findElement(By.xpath("//*[contains(text(), 'добавлен к сравнению')]")).isDisplayed();
+
         driver.findElement(By.xpath("//*[contains(text(), 'Xiaomi')]/ancestor::article/descendant::div[@data-tid = 'd460c8a7']/div[2]/div")).click();
         driver.findElement(By.xpath("//*[contains(text(), 'добавлен к сравнению')]")).isDisplayed();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        driver.findElement(By.xpath("//*[contains(text(),'Сравнить')]")).click();
+
+        driver.findElement(By.xpath("//h1[contains(text(), 'Мобильные телефоны')]")).isDisplayed();
+
+
+        WebElement compareButton = driver.findElement(By.xpath("//*[contains(text(),'Сравнить')]/.."));
+        driver.get(compareButton.getAttribute("href"));
+
         int countPhone = driver.findElements(By.xpath("//*[@data-tid = '412661c']")).size();
         assertEquals(countPhone, 2);
     }
@@ -59,7 +70,7 @@ public class YandexMarketTest {
     @After
     public void setDown() {
         if (driver != null) {
-            //driver.quit();
+            driver.quit();
             logger.info("Browser driver closed");
         }
     }

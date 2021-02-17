@@ -6,12 +6,18 @@
 
     <groupId>org.example</groupId>
     <artifactId>OtusHomeWork2</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>lesson9</module>
+        <module>lesson11</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
     </properties>
 
     <dependencies>
